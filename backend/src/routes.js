@@ -9,7 +9,7 @@ const SessionController = require('./controllers/SessionController'); // Control
 
 
 // Rotas
-routes.post('/sessions', ProfileController.index);
+routes.post('/sessions', SessionController.create);
 
 routes.get('/profile', ProfileController.index);
 
