@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState } from 'react';
+
+import './global.css';
+import Routes from './routes'; 
+//import Logon from './pages/Logon'; // Automaticamente procura o index
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  return(
+    <Routes />
   );
 }
 
+// JSX => Javascript XML  => nome dado para quando é passado HTML dentro do JS
 export default App;
+
+
+
+
+/*
+    <Header titulo="Be The Hero"/> -> acesso pelo properties.titulo
+*/
+
+/*
+    <Header>
+      oi ---> acesso pelo properties.children
+    </Header>
+*/
