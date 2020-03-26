@@ -50,15 +50,17 @@ module.exports = {
         const { id } = request.params; // Route Params /incident/:id
         const ong_id = request.headers.authorization;
 
-        const incident = await connection('incident')
+        const incident = await connection('incidents')
             .where('id', id)
-            .select(ong_id)
+            .select('ong_id')
             .first();
-
-        if (incident.ong_id != ong_id) {
-            return response.status(401).json( { error: 'Operation not permitted.' } );
+        if (incident === undefined) {
+            return response.status(400).json( { error: `Invalid request.` } );
         }
-
+        if (incident.ong_id != ong_id) {
+            return response.status(401).json( { error: `Operation not permitted.` } );
+        }
+        
         await connection('incidents').where('id', id).delete();
 
         return response.status(204).send();
