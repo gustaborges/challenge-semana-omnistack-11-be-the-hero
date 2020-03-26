@@ -52,6 +52,6 @@
     display: flex;
 }
 
-.register-container .content form .input-group + input{ /*Pega o input que tem um input antes*/
+.register-container .content form .input-group input + input{ /*Pega o input que tem um input antes*/
     margin-left: 8px;
 }
