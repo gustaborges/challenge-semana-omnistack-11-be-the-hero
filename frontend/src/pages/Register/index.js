@@ -1,12 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { FiArrowLeft } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.svg';
+
+import api from '../../services/api'
+
 
 import './style.css';
 
 export default function Register() {
+    /* Integrando com Back */
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
+    const [city, setCity] = useState('');
+    const [uf, setUf] = useState('');
+
+    const history = useHistory();
+
+    async function handleRegister(event) {
+        // previne o comportamento padrão, de recarregar a página quando se faz submit no form
+        event.preventDefault();
+        const dados = {
+            name,
+            email,
+            whatsapp,
+            city,
+            uf
+        };
+        try {
+            const response = await api.post('/ongs', dados); // axios envia em formato json por padrão
+            // fazendo post na rota '/ongs' do back
+            alert(`Seu ID de acesso: ${ response.data.id }`) // id é o campo retornado pelo back
+            history.push('/'); // devolve o user para rota '/' (login)
+        }
+        catch (err) {
+            alert('Erro no cadastro, tente novamente.');
+        }
+    }
+    /* Integrando com Back */
+
     return (
         <div className="register-container">
             <div className="content">
@@ -20,14 +54,39 @@ export default function Register() {
                     </Link>
 
                 </section>
-                <form>
-                    <input placeholder="Nome da ONG" />
-                    <input type="email" placeholder="E-mail" />
-                    <input placeholder="WhatsApp" />
+                <form onSubmit={handleRegister}>
+                    <input
+                        placeholder="Nome da ONG"
+                        value={name}
+                        onChange={ (e) => {setName(e.target.value)} }
+                    />
+
+                    <input
+                        type="email"
+                        placeholder="E-mail"
+                        value = {email}
+                        onChange={ (e) => { setEmail(e.target.value) } }
+                    />
+
+                    <input
+                        placeholder="WhatsApp"
+                        value={whatsapp}
+                        onChange={ (e) => { setWhatsapp(e.target.value)}}
+                    />
 
                     <div className="input-group">
-                        <input placeholder="Cidade" />
-                        <input placeholder="UF" style={ {width:80} } />
+                        <input 
+                            placeholder="Cidade"
+                            value={city}
+                            onChange={ (e) => { setCity(e.target.value) }}
+                        />
+
+                        <input 
+                            placeholder="UF" 
+                            style={ {width:80} }
+                            value={uf}
+                            onChange={ (e) => { setUf(e.target.value) } } 
+                        />
                     </div>
                     <button className="button" type="submit">Cadastrar</button>
                 </form>
