@@ -51,7 +51,7 @@ export default StyleSheet.create(
 
         incidentProperty: {
             fontSize: 14,
-            color: "#41414d",
+            color: '#41414d',
             fontWeight: 'bold'
         },
 
