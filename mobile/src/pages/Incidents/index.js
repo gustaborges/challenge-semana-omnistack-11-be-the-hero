@@ -1,24 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, Text, TouchableOpacity, FlatList } from 'react-native';
 import {useNavigation} from '@react-navigation/native'; // Permite rotear o usuario pelas Views
+
+import api from '../../services/api.js'
+
 import { Feather } from '@expo/vector-icons';
 import logoImg from '../../assets/logo.png'
 import styles from './styles';
 
 export default function Incidents() {
     const navigation = useNavigation(); // equivale ao useHistory
+    const [incidents, setIncidents] = useState([]);
+    const [total, setTotal] = useState(0);
+    /* Paginaçao infinita */
+    const[page, setPage] = useState(1);
+    const[loading, setLoading] = useState(false);
+    /*  */
 
-    function navigateToDetail() {
-        navigation.navigate('Detail');
+    function navigateToDetail(incident) {
+        navigation.navigate('Detail', { incident });
     }
 
+    async function loadIncidents() {
+        if (loading) { // evita que enquanto uma requisição esta sendo feita, outra venha a acontecer
+            return;
+        }
+        if (total > 0 && incidents.length === total){
+            return;
+        }
+        setLoading(true);
+
+        const response = await api.get('/incidents', {params: {page} });
+        //await api.get(`/incidents?page=${page}`);
+
+        //setIncidents(response.data);
+        setIncidents([...incidents, ...response.data]); // anexa dois vetores em um
+        setTotal(response.headers['x-total-count']);
+        setPage(page + 1);
+
+        setLoading(false);
+    }
+
+    useEffect(() => {loadIncidents(); }, []);
+
     return (
-        <View style={styles.container}>
+        <View style={styles.container}> 
             {/* Header */}
             <View style={styles.header}>
                 <Image source={logoImg} />
                 <Text style={styles.headerText}>
-                    Total de <Text style={styles.headerTextBold}>0 casos</Text>.
+                    Total de <Text style={styles.headerTextBold}>{total} casos</Text>.
                 </Text>
             </View>
             {/* Mensagem Bem-Vindo */}
@@ -27,27 +58,34 @@ export default function Incidents() {
             {/* Lista de casos 
                 Utilização do FlatList para habilitar o scroll            
             */}
-            <FlatList data={[1, 2, 3, 4]} 
-                keyExtractor={ incident => String(incident)}
+            <FlatList data={incidents} 
+                keyExtractor={ incident => String(incident.id)}
                 style={styles.incidentList}
-                showsVerticalScrollIndicator= {false}
-                renderItem={ () => (
+                //showsVerticalScrollIndicator= {false}
+                onEndReached = { loadIncidents }
+                onEndReachedThreshold = {0.2} // o quao perto o usuario tem q estar do fim para acionar endReached
+                renderItem={ ({item: incident}) => (
                     <View style={styles.incident}>
                         <Text style={styles.incidentProperty}>ONG:</Text>
-                        <Text style={styles.incidentValue}>APAD</Text>
+                        <Text style={styles.incidentValue}>{incident.name}</Text>
 
                         <Text style={styles.incidentProperty}>CASO:</Text>
-                        <Text style={styles.incidentValue}>Casa incendiada</Text>
+                        <Text style={styles.incidentValue}>{incident.title}</Text>
 
                         <Text style={styles.incidentProperty}>VALOR:</Text>
-                        <Text style={styles.incidentValue}>R$ 120,00</Text>
+                        <Text style={styles.incidentValue}>{new Intl.NumberFormat("pt-BR", {
+                             style: "currency",
+                             currency: "BRL"
+                             }).format(incident.value)}
+                        </Text>
 
-                        <TouchableOpacity style={styles.detailsButton} onPress={ navigateToDetail }>
+                        <TouchableOpacity style={styles.detailsButton} onPress={ () => navigateToDetail(incident) }>
                             <Text style={styles.detailsButtonText}>Ver mais detalhes</Text>
                             <Feather name="arrow-right" size={16} color="#E02041" />
                         </TouchableOpacity>
                     </View>
-            )}/>
+            )} />
+
         </View>
     ); 
 }
