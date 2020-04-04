@@ -1,6 +1,6 @@
 # BeTheHero
 
-<p>Esta aplicação foi desenvolvida utilizando a abordagem Single Page Application (SPA) com a stack <b>Node.js</b> no back-end, <b>React</b> no front-end e <b>React Native</b> para o desenvolvimento da aplicação mobile, , durante a <b>Semana Omnistack 11</b>.</p>
+<p>Esta aplicação foi desenvolvida utilizando a abordagem Single Page Application (SPA) com a stack <b>Node.js</b> no back-end, <b>React</b> no front-end e <b>React Native</b> para o desenvolvimento da aplicação mobile, durante a <b>Semana Omnistack 11</b>.</p>
 
 <h2>Back-end (Node.js)</h2>
 <ul>
